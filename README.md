@@ -74,7 +74,7 @@ import com.akiban.sql.parser.StatementNode;
 public class SimpleExampleTest {
 
     @Test
-    public void assertJustAggregateFunction() throws StandardException {
+    public void matchJustAggregateFunction() throws StandardException {
         String simpleSql = "SELECT foo, SUM(bar) FROM MyTable";
         StatementNode statement = new SQLParser().parseStatement(simpleSql);
         assertThat(statement, hasInQuery(result(aggregate("SUM", column("bar")))));
