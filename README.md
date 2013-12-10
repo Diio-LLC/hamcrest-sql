@@ -2,9 +2,9 @@
 
 ## Overview
 
-The hamcrest-sql library is a Java library used to match SQL statements via hamcrest APIs. The library's matchers can match either entire SQL statements or individual clauses.
+The hamcrest-sql library is a Java library used to match SQL statements via [hamcrest](https://code.google.com/p/hamcrest/) APIs. The library's matchers can match either entire SQL statements or individual clauses. Like most hamcrest matchers, this library's matchers are especially useful in conjunction with [JUnit](http://junit.org/).
 
-This library depends on the [FoundationDB SQL Parser library](https://github.com/FoundationDB/sql-parser) to parse SQL statements. The FoundationDB SQL Parser is itself derived from the Apache Derby parser.
+This library depends on the [FoundationDB SQL Parser library](https://github.com/FoundationDB/sql-parser) to parse SQL statements. The FoundationDB SQL Parser is itself derived from the [Apache Derby](http://db.apache.org/derby/) parser.
 
 ## Building from source
 
