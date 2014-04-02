@@ -95,8 +95,8 @@ public class QueryMatcherTest {
                 " WHERE bar = 55";
         caseStatement = getParseTree(caseSql);
         
-        sqlWithFunctions = "SELECT FLOOR(foo) FROM MyTable WHERE ROUND(bar, 0) > 10";
-        statementWithFunctions = getParseTree(sqlWithFunctions);        
+        sqlWithFunctions = "SELECT FLOOR(foo), TRIM(LEADING '0' FROM foo) FROM MyTable WHERE ROUND(bar, 0) > 10";
+        statementWithFunctions = getParseTree(sqlWithFunctions);
 
         inSingleItemListStatement = getParseTree("SELECT foo FROM MyTable WHERE bar IN ('my_string_literal')");
         inTwoItemListStatement = getParseTree("SELECT foo FROM MyTable WHERE bar IN ('my_string_literal', 'my_second_literal')");
@@ -425,7 +425,11 @@ public class QueryMatcherTest {
         //no such column
         assertThat(statementWithFunctions, not(hasInQuery(where(lower(column("barry"))))));
     }
-    
+
+    /**
+     sqlWithFunctions = "SELECT FLOOR(foo),  WHERE ROUND(bar, 0) > 10";
+     statementWithFunctions = getParseTree(sqlWithFunctions);
+     */
     @SuppressWarnings("unchecked")
     @Test
     public void functionMatcherDoesNotMatchFunctionName() {

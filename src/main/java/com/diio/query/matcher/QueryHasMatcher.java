@@ -26,6 +26,7 @@ import com.akiban.sql.StandardException;
 import com.akiban.sql.parser.QueryTreeNode;
 import com.akiban.sql.parser.Visitable;
 import com.akiban.sql.parser.Visitor;
+import com.akiban.sql.unparser.NodeToString;
 
 /**
  * Attempts to match the given nested Matcher&lt;QueryTreeNode&rt; against all query subtrees. Useful
@@ -36,7 +37,6 @@ import com.akiban.sql.parser.Visitor;
  *
  */
 public class QueryHasMatcher extends TypeSafeMatcher<QueryTreeNode> {
-
     private final Matcher<QueryTreeNode> subMatcher;
 
     public QueryHasMatcher(Matcher<QueryTreeNode> m) {
@@ -50,12 +50,23 @@ public class QueryHasMatcher extends TypeSafeMatcher<QueryTreeNode> {
     
     @Override
     protected void describeMismatchSafely(QueryTreeNode item, Description mismatchDescription) {
-        if (item instanceof QueryTreeNode) {
+        if (item != null) {
             final StringWriter writer = new StringWriter();
-            ((QueryTreeNode)item).treePrint(writer);
-            mismatchDescription.appendText("was ").appendText(writer.toString());
+            item.treePrint(writer);
+
+            String sql = null;
+
+            try {
+                sql = new NodeToString().toString(item);
+            } catch (StandardException e) {
+                e.printStackTrace();
+            }
+
+            mismatchDescription.appendText("was ")
+                    .appendText(sql)
+                    .appendText(writer.toString());
         } else {
-            super.describeMismatchSafely(item, mismatchDescription);
+            super.describeMismatchSafely(null, mismatchDescription);
         }        
     }
 
@@ -124,7 +135,6 @@ public class QueryHasMatcher extends TypeSafeMatcher<QueryTreeNode> {
         
     }
 
-    
     /**
      * Syntactic sugar!
      *

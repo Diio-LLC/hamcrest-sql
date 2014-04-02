@@ -16,6 +16,7 @@
 package com.diio.query.matcher;
 
 import static com.diio.query.matcher.LiteralMatcher.literal;
+import static com.diio.query.matcher.QueryHasMatcher.hasInQuery;
 
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -40,11 +41,11 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
 
     private final String functionName;
 
-    private final Matcher<QueryTreeNode>[] orderedSubmatchers;
+    private final Matcher<QueryTreeNode>[] orderedArgumentMatchers;
 
-    public FunctionMatcher(String aggregation, @SuppressWarnings("unchecked") Matcher<QueryTreeNode>... orderedArgumentMatchers) {
-        functionName = aggregation;
-        orderedSubmatchers = orderedArgumentMatchers;
+    public FunctionMatcher(String functionName, @SuppressWarnings("unchecked") Matcher<QueryTreeNode>... orderedArgumentMatchers) {
+        this.functionName = functionName;
+        this.orderedArgumentMatchers = orderedArgumentMatchers;
     }
     
     @Override
@@ -52,11 +53,11 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
         description.appendText("function ").
             appendText(functionName);
 
-        if (orderedSubmatchers.length > 0) {
+        if (orderedArgumentMatchers.length > 0) {
             description.appendText(" called with arguments ");
 
-            for (int i = 0; i < orderedSubmatchers.length; i++) {
-                Matcher<QueryTreeNode> submatcher = orderedSubmatchers[i];
+            for (int i = 0; i < orderedArgumentMatchers.length; i++) {
+                Matcher<QueryTreeNode> submatcher = orderedArgumentMatchers[i];
 
                 if (i > 0) {
                     description.appendText(", ");
@@ -94,16 +95,16 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
     private boolean matchesParameters(QueryTreeNode[] parameters) {
         //no submatchers is the "existential" case for matching the function
         //TODO: consider removing this implicit existential check and require something like an IsAnything submatcher
-        if (orderedSubmatchers.length == 0) {
+        if (orderedArgumentMatchers.length == 0) {
             return true;
-        } else if (orderedSubmatchers.length > 0 && orderedSubmatchers.length != parameters.length) {
+        } else if (orderedArgumentMatchers.length > 0 && orderedArgumentMatchers.length != parameters.length) {
             return false;
         }
 
         for (int i = 0; i < parameters.length; i++) {
             QueryTreeNode parameter = parameters[i];
 
-            if (!QueryHasMatcher.hasInQuery(orderedSubmatchers[i]).matches(parameter)) {
+            if (!hasInQuery(orderedArgumentMatchers[i]).matches(parameter)) {
                 return false;
             }
         }
@@ -117,7 +118,7 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
      * For example, assertThat(query, function("ROUND", column("price"), literal(0)));
      */
     @Factory
-    public static Matcher<QueryTreeNode> function(String name, @SuppressWarnings("unchecked") Matcher<QueryTreeNode>... matchers) {
+    public static Matcher<QueryTreeNode> function(String name, Matcher<QueryTreeNode>... matchers) {
         return new FunctionMatcher(name, matchers);
     }
 

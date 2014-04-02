@@ -14,11 +14,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
       <artifactId>junit</artifactId>
       <version>4.11</version>
     </dependency>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
       <version>1.3</version>
     </dependency>
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -28,8 +30,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
       <groupId>com.akiban</groupId>
       <artifactId>akiban-sql-parser</artifactId>
-      <version>1.0.11</version>
+      <version>1.0.16</version>
     </dependency>
-
   </dependencies>
 </project>
