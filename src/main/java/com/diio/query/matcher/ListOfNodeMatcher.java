@@ -37,7 +37,6 @@ import com.google.common.collect.UnmodifiableIterator;
  *
  */
 public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
-
     public enum MatchType {
         ALLOWING_GAPS("in order"),
         SUBSEQUENCE_NO_GAPS("in a subsequence without gaps"),
@@ -51,9 +50,10 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
     }
 
     private final Matcher<QueryTreeNode>[] submatchers;
+
     private final MatchType matchType;
 
-    public ListOfNodeMatcher(Matcher<QueryTreeNode> submatchers[], MatchType howToMatch) {
+    public ListOfNodeMatcher(Matcher<QueryTreeNode>[] submatchers, MatchType howToMatch) {
         this.submatchers = submatchers;
         matchType = howToMatch;
     }
@@ -75,7 +75,9 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
     @Override
     protected boolean matchesSafely(QueryTreeNode item) {
         if (item instanceof QueryTreeNodeList) {
+            @SuppressWarnings("unchecked")
             UnmodifiableIterator<Matcher<QueryTreeNode>> matcherIterator = Iterators.forArray(submatchers);
+
             if (!matcherIterator.hasNext()) {
                 //degenerate case -- no specified submatcher matches everything
                 return true;
@@ -84,7 +86,9 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
 
             @SuppressWarnings("unchecked")
             final Iterator<QueryTreeNode> nodeListIterator = ((QueryTreeNodeList<QueryTreeNode>)item).iterator();
-            QueryTreeNode nextNode = null;
+
+            QueryTreeNode nextNode;
+
             while (nodeListIterator.hasNext()) {
                 nextNode = nodeListIterator.next();
                 if (QueryHasMatcher.hasInQuery(nextMatcher).matches(nextNode)) {
@@ -96,8 +100,12 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
                 } else if (matchType == MatchType.EXACT_SEQUENCE) {
                     return false;
                 } else if (matchType == MatchType.SUBSEQUENCE_NO_GAPS) {
+                    @SuppressWarnings("unchecked")
+                    UnmodifiableIterator<Matcher<QueryTreeNode>> newMatcherIterator = Iterators.forArray(submatchers);
+
                     //on the next iteration, pretend we haven't matched anything yet, even if we have
-                    matcherIterator = Iterators.forArray(submatchers);
+                    matcherIterator = newMatcherIterator;
+
                     nextMatcher = matcherIterator.next();
                 }
             }
@@ -106,16 +114,19 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
     }
 
     @Factory
+    @SafeVarargs
     public static ListOfNodeMatcher ordered(@SuppressWarnings("unchecked") Matcher<QueryTreeNode>... nodeMatchers) {
         return new ListOfNodeMatcher(nodeMatchers, MatchType.ALLOWING_GAPS);
     }
 
     @Factory
+    @SafeVarargs
     public static ListOfNodeMatcher subsequence(@SuppressWarnings("unchecked") Matcher<QueryTreeNode>... nodeMatchers) {
         return new ListOfNodeMatcher(nodeMatchers, MatchType.SUBSEQUENCE_NO_GAPS);
     }
 
     @Factory
+    @SafeVarargs
     public static ListOfNodeMatcher exactSequence(@SuppressWarnings("unchecked") Matcher<QueryTreeNode>... nodeMatchers) {
         return new ListOfNodeMatcher(nodeMatchers, MatchType.EXACT_SEQUENCE);
     }
