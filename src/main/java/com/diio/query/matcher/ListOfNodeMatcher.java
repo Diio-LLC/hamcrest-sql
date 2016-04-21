@@ -58,6 +58,10 @@ public class ListOfNodeMatcher extends QueryTreeNodeMatcher {
         matchType = howToMatch;
     }
 
+    public Matcher<QueryTreeNode>[] getSubMatchers() {
+        return submatchers;
+    }
+
     @Override
     public void describeTo(Description description) {
         description.appendText("[");

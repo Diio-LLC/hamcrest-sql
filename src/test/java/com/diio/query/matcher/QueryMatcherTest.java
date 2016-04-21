@@ -251,7 +251,7 @@ public class QueryMatcherTest {
         final Matcher<QueryTreeNode> cased = cased(column("foo").equalToLiteral("my foo literal"), literal(88), literal(3));
         final StringDescription description = new StringDescription();
         cased.describeTo(description);
-        assertEquals("a CASE statement clause of a relational expression of a column with name foo= a literal with value my foo literal " +
+        assertEquals("a CASE statement clause of a relational expression of a column with name foo = a literal with value my foo literal " +
         		"THEN a literal with value 88 ELSE a literal with value 3", 
                 description.toString());
     }

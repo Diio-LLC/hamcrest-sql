@@ -43,7 +43,8 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
 
     private final Matcher<QueryTreeNode>[] orderedArgumentMatchers;
 
-    public FunctionMatcher(String functionName, @SuppressWarnings("unchecked") Matcher<QueryTreeNode>... orderedArgumentMatchers) {
+    @SafeVarargs
+    public FunctionMatcher(String functionName, Matcher<QueryTreeNode>... orderedArgumentMatchers) {
         this.functionName = functionName;
         this.orderedArgumentMatchers = orderedArgumentMatchers;
     }
@@ -118,12 +119,12 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
      * For example, assertThat(query, function("ROUND", column("price"), literal(0)));
      */
     @Factory
+    @SafeVarargs
     public static Matcher<QueryTreeNode> function(String name, Matcher<QueryTreeNode>... matchers) {
         return new FunctionMatcher(name, matchers);
     }
 
     @Factory
-    @SuppressWarnings("unchecked")
     public static Matcher<QueryTreeNode> substr(Matcher<QueryTreeNode> stringMatcher, int fromIndex, int length) {
         return function(SUBSTR, stringMatcher, literal(fromIndex), literal(length));
     }

@@ -97,7 +97,11 @@ public class ColumnMatcher extends QueryTreeNodeMatcher {
         }
         return toReturn;
     }
-    
+
+    public Matcher<QueryTreeNode> equalTo(Matcher<QueryTreeNode> matcher) {
+        return BinaryOperatorNodeMatcher.equalTo(this, matcher);
+    }
+
     public Matcher<QueryTreeNode> equalToLiteral(String literal) {
         return BinaryOperatorNodeMatcher.equalTo(this, new LiteralMatcher<String>(literal));
     }
@@ -113,7 +117,7 @@ public class ColumnMatcher extends QueryTreeNodeMatcher {
     public Matcher<QueryTreeNode> notEqualToLiteral(int literal) {
         //Note: UnaryOperatorNodeMatcher.not(equalToLiteral(literal)) produces a matcher which matches different parse trees than this one
 //        return UnaryOperatorNodeMatcher.not(equalToLiteral(literal));
-        return new BinaryOperatorNodeMatcher(this, "<>", new LiteralMatcher<Integer>(literal));
+        return BinaryOperatorNodeMatcher.notEqualTo(this, LiteralMatcher.literal(literal));
     }
 
     public Matcher<QueryTreeNode> lessThen(int literal) {
@@ -128,7 +132,20 @@ public class ColumnMatcher extends QueryTreeNodeMatcher {
         return BinaryOperatorNodeMatcher.is(this, new LiteralMatcher<Boolean>(bool));
     }
 
+    // FIXME: Akiban SQL Parser fails on all bitwise operations so trying to fool it for now by using %/mod operation instead (just for tests to pass).
+    public Matcher<QueryTreeNode> bitwiseAndUsingMod(Number literal) {
+        return BinaryOperatorNodeMatcher.bitwiseAndUsingMod(this, LiteralMatcher.<Number>literal(literal));
+    }
+
     public Matcher<QueryTreeNode> in(ListOfNodeMatcher matchers) {
         return InMatcher.in(this, matchers);
+    }
+
+    public Matcher<QueryTreeNode> inOrEqual(ListOfNodeMatcher matchers) {
+        if (matchers.getSubMatchers().length > 1) {
+            return in(matchers);
+        } else {
+            return equalTo(matchers.getSubMatchers()[0]);
+        }
     }
 }

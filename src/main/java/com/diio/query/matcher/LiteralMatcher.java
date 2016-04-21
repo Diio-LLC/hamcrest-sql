@@ -79,10 +79,16 @@ public class LiteralMatcher<T> extends QueryTreeNodeMatcher {
         }
 
         if (checkThisItem instanceof ConstantNode) {
+            Object value = ((ConstantNode) checkThisItem).getValue();
+
             if (matcher == null) {
-                return literal.equals(((ConstantNode) checkThisItem).getValue());
+                if (value instanceof Number && literal instanceof Number) {
+                    return ((Number) value).doubleValue() == ((Number) literal).doubleValue();
+                } else {
+                    return literal.equals(value);
+                }
             } else {
-                return matcher.matches(((ConstantNode) checkThisItem).getValue());
+                return matcher.matches(value);
             }
         }
         return false;
