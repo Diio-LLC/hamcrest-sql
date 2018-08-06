@@ -39,6 +39,8 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
     // For some reason 'SUBSTR' is matched as 'substring' ternary operator.
     public static final String SUBSTR = "substring";
 
+    public static final String NVL2 = "nvl2";
+
     private final String functionName;
 
     private final Matcher<QueryTreeNode>[] orderedArgumentMatchers;
@@ -127,5 +129,10 @@ public class FunctionMatcher extends QueryTreeNodeMatcher {
     @Factory
     public static Matcher<QueryTreeNode> substr(Matcher<QueryTreeNode> stringMatcher, int fromIndex, int length) {
         return function(SUBSTR, stringMatcher, literal(fromIndex), literal(length));
+    }
+
+    @Factory
+    public static Matcher<QueryTreeNode> nvl2(Matcher<QueryTreeNode> ifNonNullMatcher, Matcher<QueryTreeNode>  thenMatcher, Matcher<QueryTreeNode>  elseMatcher) {
+        return function(NVL2, ifNonNullMatcher, thenMatcher, elseMatcher);
     }
 }
