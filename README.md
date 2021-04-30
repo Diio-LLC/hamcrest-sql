@@ -41,13 +41,12 @@ for making the library accessible for maven is to install the jar into a 3rd par
 The appropriate Maven `pom.xml` entry for the library is:
 
 ```xml
-<dependencies>
   <dependency>
     <groupId>com.diio</groupId>
     <artifactId>hamcrest-sql</artifactId>
-    <version>0.1</version>
+    <version>0.2.0</version>
+    <scope>test</scope>
   </dependency>
-</dependencies>
 ```
 
 ## Working With hamcrest-sql
@@ -72,7 +71,6 @@ import com.akiban.sql.parser.SQLParser;
 import com.akiban.sql.parser.StatementNode;
 
 public class SimpleExampleTest {
-
     @Test
     public void matchJustAggregateFunction() throws StandardException {
         String simpleSql = "SELECT foo, SUM(bar) FROM MyTable";
