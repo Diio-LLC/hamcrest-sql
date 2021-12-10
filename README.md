@@ -83,6 +83,6 @@ public class SimpleExampleTest {
 ## License
 
 Apache License, Version 2.0
-Copyright (c) 2013 Diio, LLC  
+Copyright (c) 2022 Cirium  
 It is free software and may be redistributed under the terms specified
 in the LICENSE.txt and NOTICE files.
